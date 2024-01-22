@@ -1,4 +1,4 @@
-package com.app.dashboard_backend.repository;
+package com.app.dashboard_backend.services.repository;
 
 import com.app.dashboard_backend.models.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
