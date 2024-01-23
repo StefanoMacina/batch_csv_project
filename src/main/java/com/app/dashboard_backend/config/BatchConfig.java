@@ -5,6 +5,7 @@ import com.app.dashboard_backend.getSrc.GetSrc;
 import com.app.dashboard_backend.mapper.Mapper;
 import com.app.dashboard_backend.models.Order;
 import com.app.dashboard_backend.processor.OrderProcessor;
+import com.app.dashboard_backend.services.OrderRepositoryImpl;
 import com.app.dashboard_backend.services.repository.IOrderRepository;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -14,9 +15,11 @@ import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.data.RepositoryItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -25,11 +28,14 @@ import org.springframework.transaction.PlatformTransactionManager;
 public class BatchConfig{
 
     @Autowired
+    OrderRepositoryImpl orderRepositoryImpl;
+    @Autowired
     JobRepository jobRepository;
     @Autowired
     IOrderRepository orderRepository;
     @Autowired
     PlatformTransactionManager platformTransactionManager;
+
 
     @Bean
     public FlatFileItemReader<Order> orderReader(){
@@ -37,6 +43,7 @@ public class BatchConfig{
         reader.setName("order_csv_reader");
         reader.setLinesToSkip(1);
         reader.setLineMapper(Mapper.lineMapper());
+
         reader.setResource(new FileSystemResource(GetSrc.srcPath()));
         return reader;
     }

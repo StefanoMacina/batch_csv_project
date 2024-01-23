@@ -3,7 +3,9 @@ package com.app.dashboard_backend.services;
 import com.app.dashboard_backend.models.Order;
 import com.app.dashboard_backend.services.OrderService;
 import com.app.dashboard_backend.services.repository.IOrderRepository;
+import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -13,8 +15,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@Service
+@Service @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class OrderRepositoryImpl implements OrderService {
+
 
     @Autowired
     IOrderRepository orderRepository;
