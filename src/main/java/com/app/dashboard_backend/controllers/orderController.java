@@ -16,8 +16,17 @@ import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteExcep
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -37,21 +46,31 @@ public class orderController {
     @Autowired
     OrderRepositoryImpl orderRepositoryImpl;
 
-    @PostMapping("/send")
-    public String importCsvToDb(){
-
-
-        JobParameters jobParameters = new JobParametersBuilder()
-                .addLong("startAt",System.currentTimeMillis())
-                .toJobParameters();
-
+    @PostMapping(value = "/send",
+        consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
+        produces = {MediaType.APPLICATION_JSON_VALUE}
+    )
+    public ResponseEntity<String> importCsvToDb(MultipartFile file){
         try {
+            JobParameters jobParameters = new JobParametersBuilder()
+                    .addLong("startAt",System.currentTimeMillis())
+                    .toJobParameters();
             jobLauncher.run(job, jobParameters);
+
+
+            FileWriter writer = new FileWriter("src/main/resources/batch_input/test.csv");
+            String content = new String(file.getBytes(), StandardCharsets.UTF_8);
+            writer.write(content);
+            writer.close();
+
+            return ResponseEntity.ok("success");
         } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException |
                  JobParametersInvalidException e) {
             e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        return "Job launched successfully";
     }
 
     @GetMapping("/getall")
