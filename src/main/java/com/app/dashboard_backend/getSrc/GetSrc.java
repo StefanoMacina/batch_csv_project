@@ -6,8 +6,8 @@ import java.io.IOException;
 
 public class GetSrc {
 
-
     private static String fileToRead = "src/main/resources/src";
+
     public static String srcPath(){
 
         try{

@@ -47,6 +47,8 @@ public class orderController {
     @Autowired
     WriteFile wf;
 
+    @Autowired
+    CreateFile cf;
 
 
     @PostMapping(value = "/send",
@@ -56,13 +58,17 @@ public class orderController {
     public ResponseEntity<String> importCsvToDb(MultipartFile file)  {
 
         try {
+
+            cf.createFile();
+
             wf.writeFile(file);
+
             JobParameters jobParameters = new JobParametersBuilder()
                     .addLong("startAt",System.currentTimeMillis())
                     .toJobParameters();
             jobLauncher.run(job, jobParameters);
-            return ResponseEntity.ok("success");
 
+            return ResponseEntity.ok("success");
         } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException |
                  JobParametersInvalidException e) {
             e.printStackTrace();

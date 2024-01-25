@@ -21,8 +21,8 @@ public class Mapper {
     @Autowired
     static OrderRepositoryImpl orderRepositoryImpl;
 
-    public static LineMapper<Order> lineMapper() {
 
+    public static LineMapper<Order> lineMapper() {
 
         try{
             DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
@@ -30,7 +30,9 @@ public class Mapper {
             BeanWrapperFieldSetMapper<Order> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
 
             BufferedReader br = new BufferedReader(new FileReader(GetSrc.srcPath()));
+
             String [] headerList =  br.readLine().split(delimiter);
+            System.out.print(headerList);
             br.close();
 
             lineTokenizer.setNames(headerList);

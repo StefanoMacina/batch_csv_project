@@ -41,19 +41,15 @@ public class BatchConfig{
     @Autowired
     CreateFile createFile;
 
-    @PostConstruct
-    public void initializeFile(){
-        createFile.createFile();
-    }
+
 
     @Bean
     public FlatFileItemReader<Order> orderReader(){
-
         FlatFileItemReader<Order> reader = new FlatFileItemReader<>();
         reader.setName("order_csv_reader");
         reader.setLinesToSkip(1);
+        reader.setResource(new FileSystemResource(createFile.getFILE_NAME()));
         reader.setLineMapper(Mapper.lineMapper());
-        reader.setResource(new FileSystemResource(GetSrc.srcPath()));
         return reader;
     }
 

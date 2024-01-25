@@ -1,12 +1,14 @@
 package com.app.dashboard_backend.createFile;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
 
 @Component
 public class CreateFile {
-    private final String FILE_NAME = "src/main/resources/batch_input/test.csv";
+    @Value("${filepath}")
+    private String FILE_NAME;
 
     public String getFILE_NAME() {
         return FILE_NAME;

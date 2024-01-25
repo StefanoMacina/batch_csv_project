@@ -11,7 +11,6 @@ import java.nio.channels.FileChannel;
 
 @Component
 public class WriteFile {
-
     @Autowired
     CreateFile cf;
 
