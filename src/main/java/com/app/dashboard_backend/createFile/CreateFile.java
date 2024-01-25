@@ -1,24 +1,29 @@
 package com.app.dashboard_backend.createFile;
 
+import org.springframework.stereotype.Component;
+
 import java.io.File;
-import java.io.IOException;
 
+@Component
 public class CreateFile {
+    private final String FILE_NAME = "src/main/resources/batch_input/test.csv";
 
-    public static void createFile(){
+    public String getFILE_NAME() {
+        return FILE_NAME;
+    }
+
+    public void createFile(){
 
         try{
-            File newCsv = new File("src/main/resources/csv/Filename.csv");
-                if(newCsv.createNewFile()){
-                    System.out.print("File " + newCsv.getName() + " created.");
-                } else {
-                    System.out.print("File already exists.");
-                }
-
-        }catch(IOException e){
-            System.out.print("Error occured during file creation");
+            File file = new File(FILE_NAME);
+            if(file.createNewFile()){
+                System.out.println("file created at" + file.getCanonicalPath());
+            } else {
+                System.out.print("file already exist at " + file.getCanonicalPath());
+            }
+        } catch (Exception e){
             e.printStackTrace();
-
         }
+
     }
 }

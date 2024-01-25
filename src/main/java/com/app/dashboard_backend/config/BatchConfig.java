@@ -1,12 +1,14 @@
 package com.app.dashboard_backend.config;
 
 
+import com.app.dashboard_backend.createFile.CreateFile;
 import com.app.dashboard_backend.getSrc.GetSrc;
 import com.app.dashboard_backend.mapper.Mapper;
 import com.app.dashboard_backend.models.Order;
 import com.app.dashboard_backend.processor.OrderProcessor;
 import com.app.dashboard_backend.services.OrderRepositoryImpl;
 import com.app.dashboard_backend.services.repository.IOrderRepository;
+import jakarta.annotation.PostConstruct;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
@@ -36,14 +38,21 @@ public class BatchConfig{
     @Autowired
     PlatformTransactionManager platformTransactionManager;
 
+    @Autowired
+    CreateFile createFile;
+
+    @PostConstruct
+    public void initializeFile(){
+        createFile.createFile();
+    }
 
     @Bean
     public FlatFileItemReader<Order> orderReader(){
+
         FlatFileItemReader<Order> reader = new FlatFileItemReader<>();
         reader.setName("order_csv_reader");
         reader.setLinesToSkip(1);
         reader.setLineMapper(Mapper.lineMapper());
-
         reader.setResource(new FileSystemResource(GetSrc.srcPath()));
         return reader;
     }
@@ -64,6 +73,7 @@ public class BatchConfig{
 
     @Bean
     public Step orderStep() {
+
         return new StepBuilder("orderStep", jobRepository)
                 .<Order, Order>chunk(2000, platformTransactionManager)
                 .reader(orderReader())
